@@ -1,0 +1,221 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common &mdash; Calabash v0.0.0
+ documentation</title>
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.0
+',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Calabash v0.0.0
+ documentation" href="index.html" />
+    <link rel="prev" title="pipeline" href="pipeline.html" />
+   
+  
+  <link media="only screen and (max-device-width: 480px)" href="_static/small_flask.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pipeline.html" title="pipeline"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Calabash v0.0.0
+ documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="common">
+<h1><a class="reference internal" href="#module-calabash.common" title="calabash.common"><tt class="xref py py-mod docutils literal"><span class="pre">common</span></tt></a><a class="headerlink" href="#common" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="#module-calabash.common" title="calabash.common"><tt class="xref py py-mod docutils literal"><span class="pre">calabash.common</span></tt></a> defines some helpful pipeline components, borrowed
+straight from UNIX but adapted to work with arbitrary Python objects instead of
+just simple text streams.</p>
+<span class="target" id="module-calabash.common"></span><p>Defined in this module:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#calabash.common.cat" title="calabash.common.cat"><tt class="xref py py-func docutils literal"><span class="pre">cat()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.curl" title="calabash.common.curl"><tt class="xref py py-func docutils literal"><span class="pre">curl()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.echo" title="calabash.common.echo"><tt class="xref py py-func docutils literal"><span class="pre">echo()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.filter" title="calabash.common.filter"><tt class="xref py py-func docutils literal"><span class="pre">filter()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.grep" title="calabash.common.grep"><tt class="xref py py-func docutils literal"><span class="pre">grep()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.map" title="calabash.common.map"><tt class="xref py py-func docutils literal"><span class="pre">map()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.pretty_printer" title="calabash.common.pretty_printer"><tt class="xref py py-func docutils literal"><span class="pre">pretty_printer()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.sed" title="calabash.common.sed"><tt class="xref py py-func docutils literal"><span class="pre">sed()</span></tt></a></li>
+<li><a class="reference internal" href="#calabash.common.sh" title="calabash.common.sh"><tt class="xref py py-func docutils literal"><span class="pre">sh()</span></tt></a></li>
+</ul>
+<dl class="function">
+<dt id="calabash.common.cat">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">cat</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#cat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.cat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file. Passes directly through to a call to <cite>open()</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">src_file</span> <span class="o">=</span> <span class="n">__file__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.pyc&#39;</span><span class="p">,</span> <span class="s">&#39;.py&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">(</span><span class="n">src_file</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;def cat&#39;</span><span class="p">):</span>
+<span class="gp">... </span>         <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&#39;def cat(*args, **kwargs):\n&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.curl">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">curl</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#curl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.curl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch a URL, yielding output line-by-line.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UNLICENSE</span> <span class="o">=</span> <span class="s">&#39;http://unlicense.org/UNLICENSE&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">curl</span><span class="p">(</span><span class="n">UNLICENSE</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">line</span><span class="p">,</span> 
+<span class="go">This is free and unencumbered software released into the public domain.</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.echo">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">echo</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#echo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield a single item. Equivalent to <tt class="docutils literal"><span class="pre">iter([item])</span></tt>, but nicer-looking.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">echo</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">[1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">echo</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">))</span>
+<span class="go">[&#39;hello&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.filter">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">filter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only pass through items for which <cite>predicate(item)</cite> is truthy.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">xrange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">|</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">[0, 2, 4]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.grep">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">grep</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#grep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.grep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter strings on stdin for the given regex (uses <tt class="xref py py-func docutils literal"><span class="pre">re.search()</span></tt>).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="s">&#39;cat&#39;</span><span class="p">,</span> <span class="s">&#39;cabbage&#39;</span><span class="p">,</span> <span class="s">&#39;conundrum&#39;</span><span class="p">,</span> <span class="s">&#39;cathedral&#39;</span><span class="p">])</span> <span class="o">|</span> <span class="n">grep</span><span class="p">(</span><span class="s">r&#39;^ca&#39;</span><span class="p">))</span>
+<span class="go">[&#39;cat&#39;, &#39;cabbage&#39;, &#39;cathedral&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.map">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">map</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map each item on stdin through the given function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">xrange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">|</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[2, 3, 4, 5, 6]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.pretty_printer">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">pretty_printer</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#pretty_printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.pretty_printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print each item on stdin and pass it straight through.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">([{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span> <span class="o">|</span> <span class="n">pretty_printer</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">pass</span>
+<span class="go">{&#39;a&#39;: 1}</span>
+<span class="go">[&#39;b&#39;, &#39;c&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.sed">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">sed</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.sed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply <tt class="xref py py-func docutils literal"><span class="pre">re.sub()</span></tt> to each line on stdin with the given pattern/repl.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="s">&#39;cat&#39;</span><span class="p">,</span> <span class="s">&#39;cabbage&#39;</span><span class="p">])</span> <span class="o">|</span> <span class="n">sed</span><span class="p">(</span><span class="s">r&#39;^ca&#39;</span><span class="p">,</span> <span class="s">&#39;fu&#39;</span><span class="p">))</span>
+<span class="go">[&#39;fut&#39;, &#39;fubbage&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.common.sh">
+<tt class="descclassname">calabash.common.</tt><tt class="descname">sh</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/calabash/common.html#sh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.common.sh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a shell command, send it input, and produce its output.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">echo</span><span class="p">(</span><span class="s">&quot;h</span><span class="se">\n</span><span class="s">e</span><span class="se">\n</span><span class="s">l</span><span class="se">\n</span><span class="s">l</span><span class="se">\n</span><span class="s">o&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">sh</span><span class="p">(</span><span class="s">&#39;sort -u&#39;</span><span class="p">))</span>
+<span class="go">e</span>
+<span class="go">h</span>
+<span class="go">l</span>
+<span class="go">o</span>
+<span class="go">&lt;BLANKLINE&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sh</span><span class="p">(</span><span class="s">&#39;echo Hello World&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">line</span><span class="p">,</span>
+<span class="go">Hello World</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pipeline.html" title="previous chapter"><tt class="docutils literal"><span class="pre">pipeline</span></tt></a></li>
+  </ul></li>
+</ul>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/common.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      <a href="http://creativecommons.org/publicdomain/zero/1.0/">No rights reserved</a> |
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>

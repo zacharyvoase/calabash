@@ -1,0 +1,232 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pipeline &mdash; Calabash v0.0.0
+ documentation</title>
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.0
+',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Calabash v0.0.0
+ documentation" href="index.html" />
+    <link rel="next" title="common" href="common.html" />
+    <link rel="prev" title="Calabash Documentation" href="index.html" />
+   
+  
+  <link media="only screen and (max-device-width: 480px)" href="_static/small_flask.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="common.html" title="common"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Calabash Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Calabash v0.0.0
+ documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pipeline">
+<h1><a class="reference internal" href="#module-calabash.pipeline" title="calabash.pipeline"><tt class="xref py py-mod docutils literal"><span class="pre">pipeline</span></tt></a><a class="headerlink" href="#pipeline" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="#module-calabash.pipeline" title="calabash.pipeline"><tt class="xref py py-mod docutils literal"><span class="pre">calabash.pipeline</span></tt></a> contains the main implementation of calabash: the
+<tt class="xref py py-class docutils literal"><span class="pre">PipeLine</span></tt> class. It also features the <tt class="xref py py-func docutils literal"><span class="pre">source()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">sink()</span></tt>
+decorators to allow you to create your own pipeline components from simple
+Python generator functions.</p>
+<span class="target" id="module-calabash.pipeline"></span><dl class="class">
+<dt id="calabash.pipeline.PipeLine">
+<em class="property">class </em><tt class="descclassname">calabash.pipeline.</tt><tt class="descname">PipeLine</tt><big>(</big><em>coro_func</em><big>)</big><a class="reference internal" href="_modules/calabash/pipeline.html#PipeLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.pipeline.PipeLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>A coroutine wrapper which enables pipelining syntax.</p>
+<p><a class="reference internal" href="#calabash.pipeline.PipeLine" title="calabash.pipeline.PipeLine"><tt class="xref py py-class docutils literal"><span class="pre">PipeLine</span></tt></a> allows you to flatten once-nested code just by wrapping
+your generators. The class provides combinators in the form of operators,
+allowing you to plug two generators together without having to nest lots of
+function calls. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">summer</span><span class="p">(</span><span class="n">stdin</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">sum</span> <span class="o">+=</span> <span class="n">item</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="nb">sum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipeLine</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span> <span class="o">|</span> <span class="n">PipeLine</span><span class="p">(</span><span class="n">summer</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span>
+<span class="go">&lt;PipeLine: &lt;lambda&gt; | summer&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">item</span>
+<span class="go">1</span>
+<span class="go">3</span>
+<span class="go">6</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<p>The yielded output of each generator in the chain becomes the input for the
+next. The rules for writing a pipeline function are simple:
+<a class="reference internal" href="#calabash.pipeline.PipeLine" title="calabash.pipeline.PipeLine"><tt class="xref py py-class docutils literal"><span class="pre">PipeLine</span></tt></a> requires a callable which accepts a single argument (the
+input), and returns an iterator. The only exception is the first part of
+the pipeline, which should accept no arguments (as there will be no input).</p>
+<p>For convenience, two decorators have been provided in this module:
+<a class="reference internal" href="#calabash.pipeline.source" title="calabash.pipeline.source"><tt class="xref py py-func docutils literal"><span class="pre">source()</span></tt></a> and <a class="reference internal" href="#calabash.pipeline.sink" title="calabash.pipeline.sink"><tt class="xref py py-func docutils literal"><span class="pre">sink()</span></tt></a>. <a class="reference internal" href="#calabash.pipeline.source" title="calabash.pipeline.source"><tt class="xref py py-func docutils literal"><span class="pre">source()</span></tt></a> is for writing functions
+which only produce output, but take no input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@source</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">my_generator</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span>
+<span class="go">&lt;PipeLine: my_generator&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pl</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">item</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#calabash.pipeline.sink" title="calabash.pipeline.sink"><tt class="xref py py-func docutils literal"><span class="pre">sink()</span></tt></a> is for writing functions which do accept input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@sink</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">add_one</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">item</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span> <span class="o">|</span> <span class="n">add_one</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span>
+<span class="go">&lt;PipeLine: my_generator | add_one&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pl</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">item</span>
+<span class="go">2</span>
+<span class="go">3</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<p>With <a class="reference internal" href="#calabash.pipeline.source" title="calabash.pipeline.source"><tt class="xref py py-func docutils literal"><span class="pre">source()</span></tt></a> and <a class="reference internal" href="#calabash.pipeline.sink" title="calabash.pipeline.sink"><tt class="xref py py-func docutils literal"><span class="pre">sink()</span></tt></a>, your functions can also accept other
+parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@sink</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">adder</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">item</span> <span class="o">+</span> <span class="n">amount</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span> <span class="o">|</span> <span class="n">adder</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span>
+<span class="go">&lt;PipeLine: my_generator | adder&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pl</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">item</span>
+<span class="go">4</span>
+<span class="go">5</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.pipeline.sink">
+<tt class="descclassname">calabash.pipeline.</tt><tt class="descname">sink</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/calabash/pipeline.html#sink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.pipeline.sink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a function as a pipeline sink (i.e. one that accepts stdin).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@sink</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">printer</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">outfile</span><span class="p">,</span> <span class="n">item</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">printer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">&lt;PipeLine: printer&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span> <span class="o">|</span> <span class="n">p</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+<span class="go">4</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabash.pipeline.source">
+<tt class="descclassname">calabash.pipeline.</tt><tt class="descname">source</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/calabash/pipeline.html#source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calabash.pipeline.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a function as a pipeline source (i.e. one that does not accept stdin).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@source</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">echoer</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">echoer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span>
+<span class="go">&lt;PipeLine: echoer&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">item</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Calabash Documentation</a></li>
+      <li>Next: <a href="common.html" title="next chapter"><tt class="docutils literal"><span class="pre">common</span></tt></a></li>
+  </ul></li>
+</ul>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pipeline.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      <a href="http://creativecommons.org/publicdomain/zero/1.0/">No rights reserved</a> |
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>
