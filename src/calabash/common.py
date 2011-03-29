@@ -135,6 +135,11 @@ def sh(stdin, command, check_success=False):
         >>> for line in sh('echo Hello World'):
         ...     print line,
         Hello World
+        >>> for line in sh('false', check_success=True):
+        ...     print line, # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        CalledProcessError: Command '['false']' returned non-zero exit status 1
     """
     import subprocess
     import shlex
