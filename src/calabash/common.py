@@ -68,16 +68,31 @@ def grep(stdin, pattern_src):
 
 
 @sink
-def sed(stdin, pattern_src, replacement):
+def sed(stdin, pattern_src, replacement, exclusive=False):
     """
     Apply :func:`re.sub` to each line on stdin with the given pattern/repl.
 
         >>> list(iter(['cat', 'cabbage']) | sed(r'^ca', 'fu'))
         ['fut', 'fubbage']
+
+    Upon encountering a non-matching line of input, :func:`sed` will pass it
+    through as-is. If you want to change this behaviour to only yield lines
+    which match the given pattern, pass `exclusive=True`::
+
+        >>> list(iter(['cat', 'nomatch']) | sed(r'^ca', 'fu'))
+        ['fut', 'nomatch']
+        >>> list(iter(['cat', 'nomatch']) | sed(r'^ca', 'fu', exclusive=True))
+        ['fut']
     """
     pattern = re.compile(pattern_src)
     for line in stdin:
-        yield pattern.sub(replacement, line)
+        match = pattern.search(line)
+        if match:
+            yield (line[:match.start()] +
+                   match.expand(replacement) +
+                   line[match.end():])
+        elif not exclusive:
+            yield line
 
 
 @sink
