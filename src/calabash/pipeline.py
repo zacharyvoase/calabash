@@ -34,7 +34,7 @@ class PipeLine(object):
     input), and returns an iterator. The only exception is the first part of
     the pipeline, which should accept no arguments (as there will be no input).
 
-    To create pipeline functions, use the :py:decorator:`pipe` decorator::
+    To create pipeline functions, use the :func:`pipe` decorator::
 
         >>> @pipe
         ... def my_generator():
