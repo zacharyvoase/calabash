@@ -34,11 +34,9 @@ class PipeLine(object):
     input), and returns an iterator. The only exception is the first part of
     the pipeline, which should accept no arguments (as there will be no input).
 
-    For convenience, two decorators have been provided in this module:
-    :func:`source` and :func:`sink`. :func:`source` is for writing functions
-    which only produce output, but take no input::
+    To create pipeline functions, use the :py:decorator:`pipe` decorator::
 
-        >>> @source
+        >>> @pipe
         ... def my_generator():
         ...     yield 1
         ...     yield 2
@@ -52,9 +50,10 @@ class PipeLine(object):
         2
         3
 
-    :func:`sink` is for writing functions which do accept input::
+    If your pipeline accepts input, an iterator will be provided as the first
+    argument to the function::
 
-        >>> @sink
+        >>> @pipe
         ... def add_one(input):
         ...     for item in input:
         ...         yield item + 1
@@ -67,10 +66,9 @@ class PipeLine(object):
         3
         4
 
-    With :func:`source` and :func:`sink`, your functions can also accept other
-    parameters::
+    Even with input, your functions can still accept other parameters::
 
-        >>> @sink
+        >>> @pipe
         ... def adder(input, amount):
         ...     for item in input:
         ...         yield item + amount
@@ -100,6 +98,19 @@ class PipeLine(object):
         return target.__ror__(self)
 
     def __ror__(self, source):
+        r"""
+        Connect two pipes so that one's output becomes the other's input.
+
+        A simple example::
+
+            >>> from itertools import imap
+            >>> p = (PipeLine(lambda: iter([1, 2, 3, 4])) |
+            ...      PipeLine(lambda stdin: imap(lambda x: x + 3, stdin)))
+            >>> p
+            <PipeLine: <lambda> | <lambda>>
+            >>> list(p)
+            [4, 5, 6, 7]
+        """
         def pipe():
             return self.coro_func(iter(source))
         pipe.__name__ = '%s | %s' % (
@@ -107,59 +118,88 @@ class PipeLine(object):
                 getattr(self.coro_func, '__name__', repr(self.coro_func)))
         return PipeLine(pipe)
 
+    def __mul__(self, other):
+        """
+        Yield the cross product between two alternative pipes.
+
+        A simple example::
+
+            >>> @pipe
+            ... def echo(values):
+            ...     for x in values:
+            ...         yield x
+            >>> list(echo([0, 1]) * echo([9, 10]))
+            [(0, 9), (0, 10), (1, 9), (1, 10)]
+        """
+        def product(stdin=None):
+            if stdin is None:
+                return itertools.product(self, other)
+            stdin1, stdin2 = itertools.tee(stdin, 2)
+            return itertools.product((stdin1 | self), (stdin2 | other))
+        product.__name__ = '%s * %s' % (
+            getattr(self.coro_func, '__name__', repr(self.coro_func)),
+            getattr(other, '__name__', repr(other)))
+        return pipe(product)()
+
+    def __add__(self, other):
+        """
+        Yield the chained output of two alternative pipes.
+
+        Example::
+
+            >>> @pipe
+            ... def echo(values):
+            ...     for x in values:
+            ...         yield x
+            >>> list(echo([1, 2, 3]) + echo([4, 5, 6]))
+            [1, 2, 3, 4, 5, 6]
+        """
+        def concat(stdin=None):
+            if stdin is None:
+                return itertools.chain(self, other)
+            stdin1, stdin2 = itertools.tee(stdin, 2)
+            return itertools.chain((stdin1 | self), (stdin2 | other))
+        concat.__name__ = '%s + %s' % (
+            getattr(self.coro_func, '__name__', repr(self.coro_func)),
+            getattr(other, '__name__', repr(other)))
+        return pipe(concat)()
+
     def __iter__(self):
         return self.coro_func()
 
 
-def source(func):
+def pipe(func):
     """
-    Wrap a function as a pipeline source (i.e. one that does not accept stdin).
+    Wrap a function as a pipeline.
 
-        >>> @source
-        ... def echoer(items):
-        ...     for item in items:
-        ...         yield item
-        >>> e = echoer([1, 2, 3])
-        >>> e
-        <PipeLine: echoer>
-        >>> for item in e:
-        ...     print item
-        1
-        2
-        3
-    """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        coro_func = wraps(func)(lambda: func(*args, **kwargs))
-        return PipeLine(coro_func)
-    return wrapper
-
-
-def sink(func):
-    """
-    Wrap a function as a pipeline sink (i.e. one that accepts stdin).
-
-        >>> @sink
+        >>> @pipe
         ... def printer(stdin, outfile=None):
         ...     for item in stdin:
         ...         print >>outfile, item
         ...         yield item
+        >>> @pipe
+        ... def echo(*values):
+        ...     for value in values:
+        ...         yield value
         >>> p = printer()
         >>> p
         <PipeLine: printer>
-        >>> output = list(iter([1, 2, 3, 4, 5]) | p)
+        >>> p = echo(1, 2, 3) | p
+        >>> p
+        <PipeLine: echo | printer>
+        >>> output = list(p)
         1
         2
         3
-        4
-        5
         >>> output
-        [1, 2, 3, 4, 5]
+        [1, 2, 3]
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
         @wraps(func)
-        def coro_func(stdin=()):
+        def coro_func(stdin=None):
+            if stdin is None:
+                return func(*args, **kwargs)
             return func(stdin, *args, **kwargs)
         return PipeLine(coro_func)
     return wrapper

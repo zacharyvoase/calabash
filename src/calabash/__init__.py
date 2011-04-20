@@ -1,4 +1,4 @@
-from pipeline import source, sink
+from pipeline import pipe
 import common
 
 

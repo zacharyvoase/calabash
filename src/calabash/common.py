@@ -2,10 +2,10 @@
 
 import re
 
-from calabash.pipeline import source, sink
+from calabash.pipeline import pipe
 
 
-@source
+@pipe
 def echo(item):
     """
     Yield a single item. Equivalent to ``iter([item])``, but nicer-looking.
@@ -17,7 +17,7 @@ def echo(item):
     """
     yield item
 
-@source
+@pipe
 def cat(*args, **kwargs):
     r"""
     Read a file. Passes directly through to a call to `open()`.
@@ -31,7 +31,7 @@ def cat(*args, **kwargs):
     return iter(open(*args, **kwargs))
 
 
-@source
+@pipe
 def curl(url):
     """
     Fetch a URL, yielding output line-by-line.
@@ -53,7 +53,7 @@ def curl(url):
         conn.close()
 
 
-@sink
+@pipe
 def grep(stdin, pattern_src):
     """
     Filter strings on stdin for the given regex (uses :func:`re.search`).
@@ -67,7 +67,7 @@ def grep(stdin, pattern_src):
             yield line
 
 
-@sink
+@pipe
 def sed(stdin, pattern_src, replacement, exclusive=False):
     """
     Apply :func:`re.sub` to each line on stdin with the given pattern/repl.
@@ -95,7 +95,7 @@ def sed(stdin, pattern_src, replacement, exclusive=False):
             yield line
 
 
-@sink
+@pipe
 def pretty_printer(stdin, **kwargs):
     """
     Pretty print each item on stdin and pass it straight through.
@@ -111,7 +111,7 @@ def pretty_printer(stdin, **kwargs):
         yield item
 
 
-@sink
+@pipe
 def map(stdin, func):
     """
     Map each item on stdin through the given function.
@@ -123,7 +123,7 @@ def map(stdin, func):
         yield func(item)
 
 
-@sink
+@pipe
 def filter(stdin, predicate):
     """
     Only pass through items for which `predicate(item)` is truthy.
@@ -136,8 +136,8 @@ def filter(stdin, predicate):
             yield item
 
 
-@sink
-def sh(stdin, command, check_success=False):
+@pipe
+def sh(stdin, command=None, check_success=False):
     r"""
     Run a shell command, send it input, and produce its output.
 
@@ -158,6 +158,9 @@ def sh(stdin, command, check_success=False):
     """
     import subprocess
     import shlex
+
+    if command is None:
+        stdin, command = (), stdin
 
     if isinstance(command, basestring):
         command = shlex.split(command)
