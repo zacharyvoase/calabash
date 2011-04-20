@@ -37,8 +37,8 @@ def curl(url):
     Fetch a URL, yielding output line-by-line.
 
         >>> UNLICENSE = 'http://unlicense.org/UNLICENSE'
-        >>> for line in curl(UNLICENSE):
-        ...     print line, # doctest: +ELLIPSIS
+        >>> for line in curl(UNLICENSE): # doctest: +SKIP
+        ...     print line,
         This is free and unencumbered software released into the public domain.
         ...
     """
