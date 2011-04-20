@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
+import itertools
 
 
 class PipeLine(object):
@@ -80,6 +81,39 @@ class PipeLine(object):
         4
         5
         6
+
+    Some operators are overridden to provide pipeline combinators (methods
+    which take multiple pipelines and return a new pipeline). For example,
+    multiplying two pipelines gets you their cross product::
+
+        >>> pl = my_generator() | (adder(3) * adder(6))
+        >>> pl
+        <PipeLine: my_generator | adder * adder>
+        >>> for item in pl:
+        ...     print item
+        (4, 7)
+        (4, 8)
+        (4, 9)
+        (5, 7)
+        (5, 8)
+        (5, 9)
+        (6, 7)
+        (6, 8)
+        (6, 9)
+
+    Adding two pipelines will chain the same input through both::
+
+        >>> pl = my_generator() | (adder(3) + adder(12))
+        >>> pl
+        <PipeLine: my_generator | adder + adder>
+        >>> for item in pl:
+        ...     print item
+        4
+        5
+        6
+        13
+        14
+        15
     """
 
     __slots__ = ('coro_func',)
