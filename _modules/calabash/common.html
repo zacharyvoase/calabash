@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>calabash.common &mdash; Calabash v0.0.1
+    <title>calabash.common &mdash; Calabash v0.0.3
  documentation</title>
     <link rel="stylesheet" href="../../_static/flasky.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.0.1
+        VERSION:     '0.0.3
 ',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Calabash v0.0.1
+    <link rel="top" title="Calabash v0.0.3
  documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Calabash v0.0.1
+        <li><a href="../../index.html">Calabash v0.0.3
  documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -57,10 +57,10 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">calabash.pipeline</span> <span class="kn">import</span> <span class="n">source</span><span class="p">,</span> <span class="n">sink</span>
+<span class="kn">from</span> <span class="nn">calabash.pipeline</span> <span class="kn">import</span> <span class="n">pipe</span>
 
 
-<span class="nd">@source</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="echo"><a class="viewcode-back" href="../../common.html#calabash.common.echo">[docs]</a><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Yield a single item. Equivalent to ``iter([item])``, but nicer-looking.</span>
@@ -72,28 +72,28 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield</span> <span class="n">item</span>
 </div>
-<span class="nd">@source</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="cat"><a class="viewcode-back" href="../../common.html#calabash.common.cat">[docs]</a><span class="k">def</span> <span class="nf">cat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="s">r&quot;&quot;&quot;</span>
-<span class="s">    Read a file. Passes directly through to a call to `open()`.</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">    Read a file. Passes directly through to a call to `open()`.</span>
 
-<span class="s">        &gt;&gt;&gt; src_file = __file__.replace(&#39;.pyc&#39;, &#39;.py&#39;)</span>
-<span class="s">        &gt;&gt;&gt; for line in cat(src_file):</span>
-<span class="s">        ...     if line.startswith(&#39;def cat&#39;):</span>
-<span class="s">        ...          print repr(line)</span>
-<span class="s">        &#39;def cat(*args, **kwargs):\n&#39;</span>
-<span class="s">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; src_file = __file__.replace(&#39;.pyc&#39;, &#39;.py&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; for line in cat(src_file):</span>
+<span class="sd">        ...     if line.startswith(&#39;def cat&#39;):</span>
+<span class="sd">        ...          print repr(line)</span>
+<span class="sd">        &#39;def cat(*args, **kwargs):\n&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
 </div>
-<span class="nd">@source</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="curl"><a class="viewcode-back" href="../../common.html#calabash.common.curl">[docs]</a><span class="k">def</span> <span class="nf">curl</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fetch a URL, yielding output line-by-line.</span>
 
 <span class="sd">        &gt;&gt;&gt; UNLICENSE = &#39;http://unlicense.org/UNLICENSE&#39;</span>
-<span class="sd">        &gt;&gt;&gt; for line in curl(UNLICENSE):</span>
-<span class="sd">        ...     print line, # doctest: +ELLIPSIS</span>
+<span class="sd">        &gt;&gt;&gt; for line in curl(UNLICENSE): # doctest: +SKIP</span>
+<span class="sd">        ...     print line,</span>
 <span class="sd">        This is free and unencumbered software released into the public domain.</span>
 <span class="sd">        ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -108,7 +108,7 @@
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 </div>
-<span class="nd">@sink</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="grep"><a class="viewcode-back" href="../../common.html#calabash.common.grep">[docs]</a><span class="k">def</span> <span class="nf">grep</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">pattern_src</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filter strings on stdin for the given regex (uses :func:`re.search`).</span>
@@ -122,20 +122,35 @@
             <span class="k">yield</span> <span class="n">line</span>
 
 </div>
-<span class="nd">@sink</span>
-<div class="viewcode-block" id="sed"><a class="viewcode-back" href="../../common.html#calabash.common.sed">[docs]</a><span class="k">def</span> <span class="nf">sed</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">pattern_src</span><span class="p">,</span> <span class="n">replacement</span><span class="p">):</span>
+<span class="nd">@pipe</span>
+<div class="viewcode-block" id="sed"><a class="viewcode-back" href="../../common.html#calabash.common.sed">[docs]</a><span class="k">def</span> <span class="nf">sed</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">pattern_src</span><span class="p">,</span> <span class="n">replacement</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply :func:`re.sub` to each line on stdin with the given pattern/repl.</span>
 
 <span class="sd">        &gt;&gt;&gt; list(iter([&#39;cat&#39;, &#39;cabbage&#39;]) | sed(r&#39;^ca&#39;, &#39;fu&#39;))</span>
 <span class="sd">        [&#39;fut&#39;, &#39;fubbage&#39;]</span>
+
+<span class="sd">    Upon encountering a non-matching line of input, :func:`sed` will pass it</span>
+<span class="sd">    through as-is. If you want to change this behaviour to only yield lines</span>
+<span class="sd">    which match the given pattern, pass `exclusive=True`::</span>
+
+<span class="sd">        &gt;&gt;&gt; list(iter([&#39;cat&#39;, &#39;nomatch&#39;]) | sed(r&#39;^ca&#39;, &#39;fu&#39;))</span>
+<span class="sd">        [&#39;fut&#39;, &#39;nomatch&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; list(iter([&#39;cat&#39;, &#39;nomatch&#39;]) | sed(r&#39;^ca&#39;, &#39;fu&#39;, exclusive=True))</span>
+<span class="sd">        [&#39;fut&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern_src</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">replacement</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="o">+</span>
+                   <span class="n">match</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">replacement</span><span class="p">)</span> <span class="o">+</span>
+                   <span class="n">line</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">():])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">exclusive</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">line</span>
 
 </div>
-<span class="nd">@sink</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="pretty_printer"><a class="viewcode-back" href="../../common.html#calabash.common.pretty_printer">[docs]</a><span class="k">def</span> <span class="nf">pretty_printer</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pretty print each item on stdin and pass it straight through.</span>
@@ -151,7 +166,7 @@
         <span class="k">yield</span> <span class="n">item</span>
 
 </div>
-<span class="nd">@sink</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="map"><a class="viewcode-back" href="../../common.html#calabash.common.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map each item on stdin through the given function.</span>
@@ -163,7 +178,7 @@
         <span class="k">yield</span> <span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
 </div>
-<span class="nd">@sink</span>
+<span class="nd">@pipe</span>
 <div class="viewcode-block" id="filter"><a class="viewcode-back" href="../../common.html#calabash.common.filter">[docs]</a><span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Only pass through items for which `predicate(item)` is truthy.</span>
@@ -176,23 +191,31 @@
             <span class="k">yield</span> <span class="n">item</span>
 
 </div>
-<span class="nd">@sink</span>
-<div class="viewcode-block" id="sh"><a class="viewcode-back" href="../../common.html#calabash.common.sh">[docs]</a><span class="k">def</span> <span class="nf">sh</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">check_success</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="s">r&quot;&quot;&quot;</span>
-<span class="s">    Run a shell command, send it input, and produce its output.</span>
+<span class="nd">@pipe</span>
+<div class="viewcode-block" id="sh"><a class="viewcode-back" href="../../common.html#calabash.common.sh">[docs]</a><span class="k">def</span> <span class="nf">sh</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">check_success</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">    Run a shell command, send it input, and produce its output.</span>
 
-<span class="s">        &gt;&gt;&gt; print &#39;&#39;.join(echo(&quot;h\ne\nl\nl\no&quot;) | sh(&#39;sort -u&#39;))</span>
-<span class="s">        e</span>
-<span class="s">        h</span>
-<span class="s">        l</span>
-<span class="s">        o</span>
-<span class="s">        &lt;BLANKLINE&gt;</span>
-<span class="s">        &gt;&gt;&gt; for line in sh(&#39;echo Hello World&#39;):</span>
-<span class="s">        ...     print line,</span>
-<span class="s">        Hello World</span>
-<span class="s">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; print &#39;&#39;.join(echo(&quot;h\ne\nl\nl\no&quot;) | sh(&#39;sort -u&#39;))</span>
+<span class="sd">        e</span>
+<span class="sd">        h</span>
+<span class="sd">        l</span>
+<span class="sd">        o</span>
+<span class="sd">        &lt;BLANKLINE&gt;</span>
+<span class="sd">        &gt;&gt;&gt; for line in sh(&#39;echo Hello World&#39;):</span>
+<span class="sd">        ...     print line,</span>
+<span class="sd">        Hello World</span>
+<span class="sd">        &gt;&gt;&gt; for line in sh(&#39;false&#39;, check_success=True):</span>
+<span class="sd">        ...     print line, # doctest: +ELLIPSIS</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        CalledProcessError: Command &#39;[&#39;false&#39;]&#39; returned non-zero exit status 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">subprocess</span>
     <span class="kn">import</span> <span class="nn">shlex</span>
+
+    <span class="k">if</span> <span class="n">command</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stdin</span><span class="p">,</span> <span class="n">command</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">stdin</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
         <span class="n">command</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
